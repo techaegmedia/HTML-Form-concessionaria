@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      #sales-section {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex items-center justify-center min-h-screen">
+      <div
+        class="w-full sm:w-3/4 md:w-1/2 lg:w-[80%] bg-white p-6 rounded-xl shadow-lg"
+      >
+        <!-- Formulário -->
+        <form id="form" class="space-y-4">
+          <div class="flex flex-col space-y-2">
+            <label class="font-semibold" for="name">Seu nome</label>
+            <input
+              id="name"
+              type="text"
+              placeholder="Digite seu nome"
+              class="p-3 border border-gray-300 rounded-md w-full"
+              required
+            />
+          </div>
+
+          <div class="flex flex-col space-y-2">
+            <label class="font-semibold" for="whatsapp">Seu WhatsApp</label>
+            <input
+              id="whatsapp"
+              type="tel"
+              placeholder="(99) 9 9999-9999"
+              class="p-3 border border-gray-300 rounded-md w-full"
+              maxlength="16"
+              required
+            />
+          </div>
+
+          <div class="flex flex-col space-y-2">
+            <label class="font-semibold" for="store">Nome da sua loja</label>
+            <input
+              id="store"
+              type="text"
+              placeholder="Digite o nome da sua loja"
+              class="p-3 border border-gray-300 rounded-md w-full"
+              required
+            />
+          </div>
+
+          <div class="flex flex-col space-y-2">
+            <label class="font-semibold" for="email">Seu melhor e-mail</label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Digite seu e-mail"
+              class="p-3 border border-gray-300 rounded-md w-full"
+              required
+            />
+          </div>
+
+          <div class="flex flex-col space-y-2">
+            <label class="font-semibold" for="vehicles"
+              >Quantos veículos você tem em estoque?</label
+            >
+            <input
+              id="vehicles"
+              type="number"
+              placeholder="Digite a quantidade de veículos"
+              class="p-3 border border-gray-300 rounded-md w-full"
+              required
+            />
+          </div>
+
+          <div class="flex flex-col space-y-2">
+            <label class="font-semibold" for="cargo">Você é:</label>
+            <select
+              id="cargo"
+              class="p-3 border border-gray-300 rounded-md w-full"
+              required
+            >
+              <option value="">Selecione uma opção</option>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Gerente">Gerente</option>
+              <option value="Dono">Dono</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+
+          <!-- Seção que será mostrada ou escondida -->
+          <div id="sales-section" class="flex flex-col space-y-2">
+            <label class="font-semibold" for="sales">Você vende:</label>
+            <select
+              id="sales"
+              class="p-3 border border-gray-300 rounded-md w-full"
+            >
+              <option value="">Selecione uma opção</option>
+              <option value="Menos de 10 carros por mês">
+                Menos de 10 carros por mês
+              </option>
+              <option value="10 a 29 carros por mês">
+                10 a 29 carros por mês
+              </option>
+              <option value="30 a 50 carros por mês">
+                30 a 50 carros por mês
+              </option>
+              <option value="50 a 100 carros por mês">
+                50 a 100 carros por mês
+              </option>
+              <option value="Acima de 100 carros por mês">
+                Acima de 100 carros por mês
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="w-full bg-sky-500 text-white py-2 px-4 rounded-md font-bold"
+            >
+              Enviar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      let formData = {
+        name: "",
+        whatsapp: "",
+        store: "",
+        email: "",
+        vehicles: "",
+        cargo: "",
+        sales: "",
+        utm_campaign: "",
+        utm_content: "",
+        utm_source: "",
+        utm_medium: "",
+        utm_term: "",
+      };
+
+      // Esconder ou mostrar a seção "Você vende" dependendo do cargo
+      document.getElementById("cargo").addEventListener("change", function () {
+        const cargoValue = this.value;
+        const salesSection = document.getElementById("sales-section");
+
+        // Mostrar a seção de vendas para Gerente, Dono e Outro
+        if (
+          cargoValue === "Gerente" ||
+          cargoValue === "Dono" ||
+          cargoValue === "Outro"
+        ) {
+          salesSection.style.display = "block";
+        } else {
+          // Esconder para Vendedores
+          salesSection.style.display = "none";
+        }
+      });
+
+      function generateUniqueID() {
+        return Date.now() + Math.floor(Math.random() * 1000000);
+      }
+
+      // Obter parâmetros UTM da URL
+      function getUTMParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        formData.utm_campaign = urlParams.get("utm_campaign") || "";
+        formData.utm_content = urlParams.get("utm_content") || "";
+        formData.utm_source = urlParams.get("utm_source") || "";
+        formData.utm_medium = urlParams.get("utm_medium") || "";
+        formData.utm_term = urlParams.get("utm_term") || "";
+      }
+
+      getUTMParameters();
+
+      // Formatação e validação do número de WhatsApp (máximo 11 dígitos)
+      const whatsappInput = document.getElementById("whatsapp");
+      whatsappInput.addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\D/g, ""); // Remove não numéricos
+        value = value.slice(0, 11); // Limita a 11 caracteres numéricos
+        formData.whatsapp = value;
+
+        let formatted = value;
+        if (value.length > 2)
+          formatted = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+        if (value.length > 7)
+          formatted = `(${value.slice(0, 2)}) ${value.slice(
+            2,
+            7
+          )}-${value.slice(7)}`;
+
+        whatsappInput.value = formatted;
+      });
+
+      // Lógica de envio do formulário
+      document.getElementById("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        formData.name = document.getElementById("name").value;
+        formData.whatsapp = document.getElementById("whatsapp").value;
+        formData.email = document.getElementById("email").value;
+        formData.store = document.getElementById("store").value;
+        formData.vehicles = document.getElementById("vehicles").value;
+        formData.cargo = document.getElementById("cargo").value;
+        formData.sales = document.getElementById("sales").value;
+
+        // Verifica existência de whatsapp
+        const formatedPhone = formData.whatsapp
+          .replaceAll(" ", "")
+          .replaceAll("(", "")
+          .replaceAll(")", "")
+          .replaceAll("-", "");
+        fetch(
+          `https://api.z-api.io/instances/3D7852425F8E40FF893D3E72838DD104/token/FCDA52D325CCCDC22CD583EB/phone-exists/55${formatedPhone}`,
+          {
+            headers: {
+              "Client-Token": "F9aa89bc6dedc4b998458decc01365a7aS",
+            },
+          }
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (!data.exists) {
+              alert("Seu número precisa estar cadastrado no WhatsApp");
+              return;
+            }
+          });
+
+        // Verifica se todas as opções obrigatórias foram preenchidas
+        if (
+          !formData.cargo ||
+          (!formData.sales && formData.cargo !== "Vendedor")
+        ) {
+          alert("Por favor, preencha todas as informações.");
+          return;
+        }
+
+        const personID = generateUniqueID();
+
+        const payload = {
+          ...formData,
+          person_id: personID,
+          whatsapp: `+55${formData.whatsapp}`,
+          deal_title: `Negócio de ${formData.name} - ${formData.email}`,
+          currency: "BRL",
+        };
+
+        console.log("Form Payload:", payload);
+
+        // Faz a requisição POST para o Make no webhook
+        fetch("https://hook.us1.make.com/eh9ein4uzqmctmttgukfuh5ye2om1rcq", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Redirecionamento com base nas seleções
+              if (formData.cargo === "Vendedor") {
+                window.location.href =
+                  "https://veiculos.aegmedia.com.br/reuniao/vendedor";
+              } else if (
+                formData.cargo === "Dono" ||
+                formData.cargo === "Gerente" ||
+                formData.cargo === "Outro"
+              ) {
+                window.location.href =
+                  "https://veiculos.aegmedia.com.br/reuniao/obrigado-mci-qmql";
+              } else {
+                window.location.href =
+                  "https://veiculos.aegmedia.com.br/reuniao/obrigado-mci";
+              }
+            } else {
+              alert("Erro ao enviar formulário.");
+            }
+          })
+          .catch((error) => {
+            console.error("Erro ao enviar os dados:", error);
+            alert("Erro ao enviar formulário.");
+          });
+      });
+    </script>
+  </body>
+</html>
